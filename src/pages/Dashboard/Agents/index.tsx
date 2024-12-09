@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Search, Plus, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DashboardLayout from '../../layouts/DashboardLayout';
 import { supabase } from '../../../lib/supabase';
 
 interface Agent {
@@ -69,6 +70,7 @@ const AgentsPage: React.FC = () => {
   const categories = ['all', ...new Set(agents.map(agent => agent.category))];
 
   return (
+    <DashboardLayout>
     <div className="p-8">
       <div className="flex justify-between items-center mb-8">
         <div>
@@ -176,6 +178,7 @@ const AgentsPage: React.FC = () => {
         </div>
       )}
     </div>
+    </DashboardLayout>
   );
 };
 

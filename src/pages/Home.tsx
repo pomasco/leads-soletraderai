@@ -37,7 +37,7 @@ const Home: React.FC = () => {
       <section className="min-h-screen relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <motion.div 
+          <motion.div
             className="absolute top-1/4 left-10 w-72 h-72 bg-caribbean-current rounded-full mix-blend-multiply filter blur-xl opacity-70 -z-10"
             animate={{
               scale: [1, 1.2, 1],
@@ -67,8 +67,8 @@ const Home: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="relative z-10 flex items-center min-h-screen px-4 sm:px-6 lg:px-8 pb-[120px] w-full">
-          <div className="max-w-[90rem] mx-auto w-full">
+        <div className="relative z-10 flex items-center min-h-screen pb-[120px] w-full">
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               ref={ref}
               initial={{ opacity: 0, y: 20 }}
@@ -147,8 +147,8 @@ const Home: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="bg-seasalt py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section id="features" className="bg-seasalt py-20">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}

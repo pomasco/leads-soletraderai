@@ -2,8 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Clock, RefreshCcw, Users, Plus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import DashboardLayout from './layouts/DashboardLayout';
+import ScrapingForm from '../components/ScrapingForm/ScrapingForm';
 import DashboardStats from '../components/Dashboard/DashboardStats';
-import SideMenu from '../components/Dashboard/SideMenu';
 import IntegrationsTable from '../components/Dashboard/IntegrationsTable';
 
 const Dashboard: React.FC = () => {
@@ -21,10 +22,8 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-dark-purple">
-      <SideMenu />
-      <div className="pl-64">
-        <div className="p-8">
+    <DashboardLayout>
+      <div className="p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-heading font-bold text-seasalt mb-2">
@@ -52,6 +51,10 @@ const Dashboard: React.FC = () => {
               Export Data
             </motion.button>
           </div>
+        </div>
+
+        <div className="mb-12">
+          <ScrapingForm />
         </div>
 
         <DashboardStats stats={stats} />
@@ -90,8 +93,7 @@ const Dashboard: React.FC = () => {
           <IntegrationsTable />
         </div>
         </div>
-      </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

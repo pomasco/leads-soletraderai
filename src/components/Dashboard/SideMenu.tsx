@@ -49,7 +49,7 @@ const SideMenu: React.FC = () => {
   };
 
   return (
-    <div className="w-64 bg-white h-screen fixed left-0 top-0 shadow-lg flex flex-col">
+    <div className="w-64 bg-white h-screen fixed left-0 top-0 shadow-lg flex flex-col z-50">
       <div className="p-6">
         <img
           src="/images/Logo/soletraderai-logo-black.png"

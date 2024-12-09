@@ -15,7 +15,7 @@ const CreditSlider: React.FC<CreditSliderProps> = ({ credits, setCredits, maxCre
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <span className="text-2xl font-semibold text-caribbean-current">
+        <span className="text-2xl font-semibold text-dark-purple">
           {credits.toLocaleString()}
         </span>
         <span className="text-sm text-dark-purple/60">
@@ -29,7 +29,7 @@ const CreditSlider: React.FC<CreditSliderProps> = ({ credits, setCredits, maxCre
         step="100"
         value={credits}
         onChange={handleChange}
-        className="w-full h-2 bg-caribbean-current/20 rounded-full appearance-none cursor-pointer
+        className="w-full h-2 bg-caribbean-current/10 rounded-full appearance-none cursor-pointer
                  [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 
                  [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-caribbean-current 
                  [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer

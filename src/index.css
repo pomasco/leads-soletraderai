@@ -14,6 +14,11 @@
     --seasalt: #fcfafa;
   }
 
+  .container {
+    @apply mx-auto;
+    max-width: 1280px;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -36,7 +41,8 @@
   
   .nav-link::before {
     content: '';
-    @apply absolute left-0 right-0 bottom-0 h-0.5 bg-seasalt scale-x-0 origin-left transition-transform duration-500 ease-out;
+    @apply absolute left-0 right-0 bottom-0 h-0.5 scale-x-0 origin-left transition-all duration-500 ease-out;
+    background-color: currentColor;
   }
   
   .nav-link:hover::before {

@@ -7,7 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Upcoming features and improvements planned
+- Agent template system with standardized components and layouts
+- New agent page sections:
+  - Hero section with avatar and category/tag system
+  - Compliance alerts with security guidelines
+  - Services overview with feature highlights
+  - Interactive work process visualization
+  - Video tutorials with thumbnail previews
+  - Free trial/test section
+  - Real-time performance metrics
+  - User testimonials and reviews
+  - Conversion-focused CTA section
+- Enhanced navigation system with dynamic styling
+- Container-based layout system for consistent spacing
+- Improved UI with backdrop blur effects and animations
+
+### Changed
+- Navigation bar behavior:
+  - Dynamic styling based on scroll position
+  - Smart logo switching between light/dark versions
+  - Page-specific background handling
+- Content layout improvements:
+  - Standardized container widths
+  - Consistent component spacing
+  - Grid-based agent display
+- Enhanced visual hierarchy:
+  - Soft button styles for categories and tags
+  - Improved typography with stroke effects
+  - Refined color palette usage
+
+### Fixed
+- Navigation bar styling and behavior
+  - Opacity and blur effect consistency
+  - Scroll position detection accuracy
+  - Logo switching reliability
+- Layout and alignment issues:
+  - Container width consistency
+  - Component spacing and margins
+  - Grid system responsiveness
+- Component architecture:
+  - Agent template structure
+  - File organization
+  - Component reusability
+
+## [1.3.0] - 2023-12-10
+### Added
+- Webhook integration for lead generation results
+- Improved location selection with Google Places API
+- Enhanced form validation and error handling
+- Real-time form feedback and status indicators
+
+### Changed
+- Updated ScrapingForm UI for better user experience
+- Improved keyword input with Enter/Tab support
+- Enhanced location selection with confirmation step
+
+### Fixed
+- Location selection validation
+- Form submission error handling
+- Supabase authentication error messages
 
 ## [1.2.0] - 2023-12-08
 ### Added
@@ -65,7 +123,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - User authentication flow
 - Protected API endpoints
 
-[Unreleased]: https://github.com/yourusername/project/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/yourusername/project/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/yourusername/project/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/yourusername/project/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/yourusername/project/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/yourusername/project/releases/tag/v1.0.0

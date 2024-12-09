@@ -23,12 +23,30 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 's
     setError('');
     
     try {
+      // Input validation
+      if (!email || !password) {
+        setError('Please fill in all required fields');
+        return;
+      }
+
+      if (!isSignIn && !name) {
+        setError('Please enter your name');
+        return;
+      }
+
       if (isSignIn) {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (error) throw error;
+        if (error) { 
+          if (error.message.includes('Invalid login credentials')) {
+            setError('Invalid email or password');
+          } else {
+            setError(error.message);
+          }
+          return;
+        }
       } else {
         const { error } = await supabase.auth.signUp({
           email,
@@ -39,11 +57,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 's
             },
           },
         });
-        if (error) throw error;
+
+        if (error) {
+          if (error.message.includes('already registered')) {
+            setError('This email is already registered');
+          } else {
+            setError(error.message);
+          }
+          return;
+        }
+        
+        setError('Check your email for the confirmation link');
+        return;
       }
+
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Auth error:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

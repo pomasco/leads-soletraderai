@@ -1,18 +1,54 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Bot, Sparkles, ArrowRight, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+
+const defaultAgents = [
+  {
+    id: 'leadsy',
+    name: 'Leadsy',
+    description: 'Generate high-quality leads from Google Maps with smart filtering and validation.',
+    category: 'lead_generation',
+    features: ['Google Maps Integration', 'Smart Filtering', 'Data Validation'],
+    icon: Bot
+  },
+  {
+    id: 'leadsy-temp',
+    name: 'Leadsy (Template)',
+    description: 'Template version of Leadsy with standardized layout and components. Use this as a reference for creating new agent pages.',
+    category: 'template',
+    features: ['Standard Layout', 'Reusable Components', 'Consistent Styling'],
+    icon: Bot
+  },
+  {
+    id: 'contentor',
+    name: 'Contentor',
+    description: 'Create engaging content optimized for your target audience and SEO.',
+    category: 'content',
+    features: ['SEO Optimization', 'Multi-format Content', 'Brand Voice Learning'],
+    icon: Sparkles
+  },
+  {
+    id: 'analytica',
+    name: 'Analytica',
+    description: 'Transform your data into actionable insights with real-time AI analytics.',
+    category: 'analytics',
+    features: ['Real-time Monitoring', 'Predictive Analytics', 'Custom Reports'],
+    icon: Zap
+  }
+];
 
 interface Agent {
   id: string;
   name: string;
   description: string;
   category: string;
-  icon: string;
+  features?: string[];
+  icon?: any;
 }
 
 const Agents: React.FC = () => {
@@ -28,24 +64,9 @@ const Agents: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = React.useState('all');
 
   React.useEffect(() => {
-    fetchAgents();
+    setAgents(defaultAgents);
+    setLoading(false);
   }, []);
-
-  const fetchAgents = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('agents')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      if (data) setAgents(data);
-    } catch (error) {
-      console.error('Error fetching agents:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const filteredAgents = agents.filter(agent => {
     const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,13 +80,13 @@ const Agents: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-purple to-dark-cyan">
       <Navigation />
-      <div className="pt-16 px-4 sm:px-6 lg:px-8">
+      <div className="pt-16">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center py-20"
+          className="text-center py-20 container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         >
           <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl mb-6 text-seasalt">
             Our <span className="highlight-text">AI Agents</span>
@@ -75,7 +96,7 @@ const Agents: React.FC = () => {
           </p>
         </motion.div>
 
-        <div className="max-w-7xl mx-auto pb-20">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
           <div className="flex gap-4 mb-8">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-seasalt/40" />
@@ -117,33 +138,43 @@ const Agents: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredAgents.map((agent) => (
-                <motion.div
+                <motion.article
                   key={agent.id}
-                  className="bg-seasalt/5 backdrop-blur-lg rounded-xl p-6 cursor-pointer"
+                  className="group bg-seasalt/5 backdrop-blur-lg rounded-xl p-8 cursor-pointer 
+                           border border-seasalt/10 hover:border-seasalt/20 transition-all
+                           hover:bg-seasalt/10"
                   whileHover={{ scale: 1.02 }}
-                  onClick={() => navigate(`/agents/${agent.id}`)}
+                  onClick={() => navigate(`/agents/${agent.id}`)} 
                 >
-                  <div className="mb-4">
-                    <h3 className="text-xl font-heading font-bold text-seasalt mb-2">
+                  <div className="mb-6">
+                    <div className="w-14 h-14 bg-caribbean-current/20 rounded-xl flex items-center 
+                                justify-center mb-4">
+                      {agent.icon && <agent.icon className="w-7 h-7 text-caribbean-current" />}
+                    </div>
+                    <h3 className="text-2xl font-heading font-bold text-seasalt mb-2">
                       {agent.name}
                     </h3>
-                    <p className="text-seasalt/60 text-sm">
+                    <p className="text-seasalt/60 text-base leading-relaxed">
                       {agent.description}
                     </p>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-seasalt/40 capitalize">
-                      {agent.category}
-                    </span>
-                    <motion.button
-                      className="btn-primary text-sm px-4 py-2"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Learn More
-                    </motion.button>
+                  
+                  {agent.features && (
+                    <ul className="space-y-2 mb-6">
+                      {agent.features.map((feature, idx) => (
+                        <li key={idx} className="text-seasalt/70 text-sm flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-celadon rounded-full" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  
+                  <div className="flex items-center gap-2 text-celadon font-medium group-hover:gap-3 transition-all">
+                    <span>Learn More</span>
+                    <ArrowRight className="w-4 h-4" />
                   </div>
-                </motion.div>
+                </motion.article>
               ))}
             </div>
           )}

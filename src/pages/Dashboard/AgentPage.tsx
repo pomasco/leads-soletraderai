@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import LeadsyAgent from './Agents/LeadsyAgent';
 import { supabase } from '../../lib/supabase';
-import SideMenu from '../../components/Dashboard/SideMenu';
+import DashboardLayout from '../layouts/DashboardLayout';
 
 const AgentPage: React.FC = () => {
   const { agentId } = useParams();
@@ -29,28 +29,30 @@ const AgentPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-dark-purple">
-        <SideMenu />
-        <div className="pl-64 p-8">
+      <DashboardLayout>
+        <div className="p-8">
           <div className="text-seasalt">Loading...</div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   if (!agent) {
     return (
-      <div className="min-h-screen bg-dark-purple">
-        <SideMenu />
-        <div className="pl-64 p-8">
+      <DashboardLayout>
+        <div className="p-8">
           <div className="text-seasalt">Agent not found</div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   if (agentId === 'leadsy') {
-    return <LeadsyAgent />;
+    return (
+      <DashboardLayout>
+        <LeadsyAgent />
+      </DashboardLayout>
+    );
   }
 
   return null;

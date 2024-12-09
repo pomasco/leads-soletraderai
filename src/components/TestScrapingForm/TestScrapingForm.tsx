@@ -106,7 +106,7 @@ const TestScrapingForm: React.FC = () => {
       <h3 className="text-xl font-heading font-bold text-dark-purple mb-4">
         Try Leadsy - Test Search
       </h3>
-      <p className="text-dark-purple/60 mb-6 text-sm">
+      <p className="text-dark-purple mb-6 text-sm">
         Test our lead generation with one free search per month (limited to 10 results)
       </p>
 
