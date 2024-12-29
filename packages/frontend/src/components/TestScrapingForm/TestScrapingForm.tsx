@@ -10,7 +10,12 @@ interface PlaceResult {
   fullText: string;
 }
 
-const TestScrapingForm: React.FC = () => {
+interface TestScrapingFormProps {
+  onSuccess?: () => void;
+  onError?: (error: string) => void;
+}
+
+const TestScrapingForm: React.FC<TestScrapingFormProps> = ({ onSuccess, onError }) => {
   const [keyword, setKeyword] = React.useState('');
   const [location, setLocation] = React.useState('');
   const [isSearching, setIsSearching] = React.useState(false);
@@ -29,7 +34,7 @@ const TestScrapingForm: React.FC = () => {
         .from('test_searches')
         .select('last_used')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setLastUsed(new Date(data.last_used));
@@ -55,12 +60,16 @@ const TestScrapingForm: React.FC = () => {
     setError('');
     
     if (!keyword.trim()) {
-      setError('Please enter a keyword');
+      const errorMsg = 'Please enter a keyword';
+      setError(errorMsg);
+      onError?.(errorMsg);
       return;
     }
 
     if (!location) {
-      setError('Please select a location');
+      const errorMsg = 'Please select a location';
+      setError(errorMsg);
+      onError?.(errorMsg);
       return;
     }
 
@@ -68,7 +77,9 @@ const TestScrapingForm: React.FC = () => {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Please sign in to use this feature');
+      if (!user) {
+        throw new Error('Please sign in to use this feature');
+      }
 
       if (!canUseTest()) {
         throw new Error('Test search can only be used once per month');
@@ -87,10 +98,12 @@ const TestScrapingForm: React.FC = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Show success message
+      onSuccess?.();
       alert('Test search completed! In the full version, you can search for multiple keywords and get more results.');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      const errorMsg = err instanceof Error ? err.message : 'An error occurred';
+      setError(errorMsg);
+      onError?.(errorMsg);
     } finally {
       setIsSearching(false);
       await checkLastUsed();

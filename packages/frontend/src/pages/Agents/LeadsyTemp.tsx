@@ -138,7 +138,7 @@ const LeadsyTemp: React.FC = () => {
       <AgentServices services={services} />
       <AgentProcess steps={processSteps} />
       <AgentTutorials tutorials={tutorials} />
-      <AgentTest />
+      <AgentTest agentName="Leadsy" />
       <AgentMetrics />
       <AgentReviews reviews={reviews} />
       <AgentCTA />
