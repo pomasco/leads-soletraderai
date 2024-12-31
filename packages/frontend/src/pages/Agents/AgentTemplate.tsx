@@ -1,30 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useNavigate } from 'react-router-dom';
+import { useAgent } from '../../hooks/useAgent';
 import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
 
 interface AgentTemplateProps {
-  agentName: string;
-  agentTitle: string;
-  description: string;
-  features: string[];
+  agentId: string;
   heroContent?: React.ReactNode;
   mainContent?: React.ReactNode;
 }
 
 const AgentTemplate: React.FC<AgentTemplateProps> = ({
-  agentName,
-  agentTitle,
-  description,
-  features,
+  agentId,
   heroContent,
   mainContent
 }) => {
+  const navigate = useNavigate();
+  const agent = useAgent(agentId);
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
   });
+
+  useEffect(() => {
+    if (!agent) {
+      navigate('/agents');
+    }
+  }, [agent, navigate]);
+
+  if (!agent) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-purple to-dark-cyan">
@@ -41,13 +49,13 @@ const AgentTemplate: React.FC<AgentTemplateProps> = ({
             className="max-w-4xl"
           >
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl mb-6 text-seasalt">
-              {agentName}
+              {agent.name}
             </h1>
             <h1 className="font-heading text-2xl sm:text-3xl lg:text-3xl mb-6 text-seasalt">
-              {agentTitle}
+              {agent.title}
             </h1>
             <p className="text-xl text-seasalt/80 mb-12 max-w-2xl">
-              {description}
+              {agent.description}
             </p>
             
             <div className="flex flex-wrap gap-6">
@@ -121,7 +129,7 @@ const AgentTemplate: React.FC<AgentTemplateProps> = ({
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+            {agent.features.map((feature, index) => (
               <motion.div
                 key={index}
                 className="bg-white p-6 rounded-xl shadow-lg"

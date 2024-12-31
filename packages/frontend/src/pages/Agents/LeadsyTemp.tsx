@@ -12,8 +12,11 @@ import AgentMetrics from '../../components/Agent/AgentMetrics';
 import AgentReviews from '../../components/Agent/AgentReviews';
 import AgentCTA from '../../components/Agent/AgentCTA';
 import ScrapingForm from '../../components/ScrapingForm/ScrapingForm';
+import { useAgent } from '../../hooks/useAgent';
 
 const LeadsyTemp: React.FC = () => {
+  const agent = useAgent('leadsy');
+
   const complianceItems = [
     {
       title: 'Data Usage Guidelines',
@@ -128,9 +131,9 @@ const LeadsyTemp: React.FC = () => {
       <Navigation />
       
       <AgentHero
-        agentName="Leadsy"
-        agentTitle="Lead Generation Specialist"
-        description="Transform your business growth with AI-powered lead generation from Google Maps. Get verified business contacts with smart filtering and validation."
+        agentName={agent?.name || ''}
+        agentTitle={agent?.title || ''}
+        description={agent?.description || ''}
         icon={<Bot className="w-10 h-10 text-caribbean-current" />}
       />
       
