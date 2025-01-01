@@ -45,6 +45,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced API security with rate limiting and CORS
 - Added verification workflow for organizations
 
+## [1.4.0] - 2025-01-01
+### Added
+- Agent process visualization system
+  - Interactive step-by-step process display
+  - Custom icons for each process step
+  - Responsive grid layout with connecting lines
+- Enhanced agent data structure
+  - Process steps with icons and descriptions
+  - Categories and tags support
+  - Developer and avatar fields
+- Improved agent template system
+  - Standardized layout components
+  - Reusable UI patterns
+  - Documentation templates
+
+### Changed
+- Updated agent interface to support new fields
+- Improved error handling in agent components
+- Enhanced type definitions for better TypeScript support
+- Optimized database queries for agent retrieval
+
+### Fixed
+- Process step display in AgentTemplate component
+- Icon mapping for process steps
+- Type definitions for optional process fields
+- Database schema for process data storage
+
 ## [1.3.0] - 2024-03-15
 ### Added
 - Webhook integration for lead generation results
@@ -64,7 +91,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Previous versions...]
 
-[Unreleased]: https://github.com/yourusername/project/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/yourusername/project/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/yourusername/project/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/yourusername/project/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/yourusername/project/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/yourusername/project/compare/v1.0.0...v1.1.0

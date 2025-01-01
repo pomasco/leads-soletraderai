@@ -1,30 +1,46 @@
-import { useMemo } from 'react';
-import agentConfig from '../config/agents.json';
+import { useState, useEffect } from 'react';
+import { getAgentBySlug } from '../lib/api/agents';
+import type { Agent } from '../types/agents';
 
-export interface Agent {
-  id: string;
-  name: string;
-  title: string;
-  description: string;
-  category: string;
-  icon: string;
-  credit_cost: number;
-  features: string[];
-  capabilities: string[];
-  metadata: {
-    version: string;
-    lastUpdated: string;
-    requirements: {
-      minCredits: number;
-      maxResults: number;
+export function useAgent(slug: string) {
+  const [agent, setAgent] = useState<Agent | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchAgent = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const data = await getAgentBySlug(slug);
+        
+        if (!data) {
+          throw new Error('Agent not found');
+        }
+        
+        setAgent(data);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to fetch agent'));
+        setAgent(null);
+      } finally {
+        setLoading(false);
+      }
     };
+
+    fetchAgent();
+  }, [slug]);
+
+  return { 
+    agent, 
+    loading, 
+    error,
+    isLoading: loading,
+    isError: !!error 
   };
-}
-
-export function useAgent(agentId: string) {
-  const agent = useMemo(() => {
-    return agentConfig.agents.find(a => a.id === agentId);
-  }, [agentId]);
-
-  return agent;
 }

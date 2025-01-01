@@ -1,35 +1,42 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAgent } from '../../hooks/useAgent';
 import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import AgentHero from '../../components/Agent/AgentHero';
+import AgentServices from '../../components/Agent/AgentServices';
+import AgentMetrics from '../../components/Agent/AgentMetrics';
+import AgentProcess from '../../components/Agent/AgentProcess';
+import AgentCompliance from '../../components/Agent/AgentCompliance';
+import AgentReviews from '../../components/Agent/AgentReviews';
+import AgentTest from '../../components/Agent/AgentTest';
 
-interface AgentTemplateProps {
-  agentId: string;
-  heroContent?: React.ReactNode;
-  mainContent?: React.ReactNode;
-}
-
-const AgentTemplate: React.FC<AgentTemplateProps> = ({
-  agentId,
-  heroContent,
-  mainContent
-}) => {
+const AgentTemplate: React.FC = () => {
+  const { agentSlug } = useParams<{ agentSlug: string }>();
   const navigate = useNavigate();
-  const agent = useAgent(agentId);
+  const { agent, loading, error } = useAgent(agentSlug || '');
+  
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
   });
 
-  useEffect(() => {
-    if (!agent) {
-      navigate('/agents');
+  // Handle navigation after data is loaded
+  React.useEffect(() => {
+    if (!loading && (error || !agent)) {
+      navigate('/agents', { replace: true });
     }
-  }, [agent, navigate]);
+  }, [agent, loading, error, navigate]);
 
+  // Show loading state while fetching
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  // Return null if no agent (will trigger navigation)
   if (!agent) {
     return null;
   }
@@ -38,116 +45,64 @@ const AgentTemplate: React.FC<AgentTemplateProps> = ({
     <div className="min-h-screen bg-gradient-to-br from-dark-purple to-dark-cyan">
       <Navigation />
       
-      {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center">
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            ref={ref}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl"
-          >
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl mb-6 text-seasalt">
-              {agent.name}
-            </h1>
-            <h1 className="font-heading text-2xl sm:text-3xl lg:text-3xl mb-6 text-seasalt">
-              {agent.title}
-            </h1>
-            <p className="text-xl text-seasalt/80 mb-12 max-w-2xl">
-              {agent.description}
-            </p>
-            
-            <div className="flex flex-wrap gap-6">
-              <motion.button
-                className="btn-primary"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Get Started
-              </motion.button>
-              <motion.button
-                className="btn-secondary"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Learn More
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
+      <AgentHero
+        agentName={agent.name}
+        agentTitle={agent.title}
+        description={agent.long_description || agent.short_description}
+        avatar={agent.avatar}
+        categories={agent.categories || []}
+        tags={agent.tags || []}
+        developer={agent.developer}
+      />
 
-        {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute top-1/4 left-10 w-72 h-72 bg-caribbean-current rounded-full 
-                     mix-blend-multiply filter blur-xl opacity-70"
-            animate={{
-              scale: [1, 1.2, 1],
-              x: [0, 50, 0],
-              y: [0, 30, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-          />
-          <motion.div
-            className="absolute bottom-1/4 right-10 w-72 h-72 bg-dark-cyan rounded-full 
-                     mix-blend-multiply filter blur-xl opacity-70"
-            animate={{
-              scale: [1, 1.2, 1],
-              x: [0, -50, 0],
-              y: [0, -30, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: 1,
-            }}
-          />
-        </div>
-      </section>
+      <AgentServices
+        services={agent.services || []}
+      />
+      
+      <AgentProcess
+        steps={agent.process || []}
+      />
+      
+      <AgentMetrics />
 
-      {/* Features Section */}
-      <section className="bg-seasalt py-20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-heading font-bold text-4xl text-dark-purple mb-6">
-              Key Features
-            </h2>
-            <p className="text-xl text-dark-purple/80">
-              Discover what makes our solution unique
-            </p>
-          </motion.div>
+      <AgentCompliance
+        items={[
+          {
+            title: 'Data Usage Guidelines',
+            description: 'Ensure compliance with data protection regulations and use gathered information responsibly.'
+          },
+          {
+            title: 'Terms of Service',
+            description: 'Review our terms of service for detailed information about usage limits and restrictions.'
+          }
+        ]}
+      />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {agent.features.map((feature, index) => (
-              <motion.div
-                key={index}
-                className="bg-white p-6 rounded-xl shadow-lg"
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <h3 className="text-xl font-heading font-bold text-dark-purple mb-4">
-                  {feature}
-                </h3>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <AgentReviews
+        reviews={[
+          {
+            author: 'Sarah Johnson',
+            company: 'Marketing Solutions Inc.',
+            content: 'Leadsy has transformed how we generate leads. The accuracy and efficiency are outstanding.',
+            rating: 5
+          },
+          {
+            author: 'Michael Chen',
+            company: 'Growth Dynamics',
+            content: 'The smart filtering feature saves us hours of manual work. Highly recommended!',
+            rating: 5
+          },
+          {
+            author: 'Emma Williams',
+            company: 'Sales Pro Group',
+            content: 'Best lead generation tool we have used. The validation feature is a game-changer.',
+            rating: 4
+          }
+        ]}
+      />
 
-      {mainContent}
+      <AgentTest agentName={agent.name} />
+
       <Footer />
     </div>
   );

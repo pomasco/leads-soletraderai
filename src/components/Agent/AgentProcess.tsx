@@ -1,20 +1,23 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Search, Filter, CheckCircle, Download } from 'lucide-react';
 
 interface ProcessStep {
   title: string;
   description: string;
-  icon: string;
+  icon: string | null;
 }
 
 interface AgentProcessProps {
-  steps: ProcessStep[];
+  steps?: ProcessStep[];
 }
 
-const getIconComponent = (iconName: string) => {
-  return <span className="text-2xl">{iconName}</span>;
+const iconMap: Record<string, React.ReactNode> = {
+  '🔍': <Search className="w-6 h-6 text-caribbean-current" />,
+  '🎯': <Filter className="w-6 h-6 text-caribbean-current" />,
+  '✅': <CheckCircle className="w-6 h-6 text-caribbean-current" />,
+  '📥': <Download className="w-6 h-6 text-caribbean-current" />
 };
 
 const AgentProcess: React.FC<AgentProcessProps> = ({ steps }) => {
@@ -22,6 +25,15 @@ const AgentProcess: React.FC<AgentProcessProps> = ({ steps }) => {
     triggerOnce: true,
     threshold: 0.1
   });
+
+  if (!steps || !Array.isArray(steps) || steps.length === 0) {
+    console.log('No process steps available:', steps);
+    return null;
+  }
+
+  if (!steps || steps.length === 0) {
+    return null;
+  }
 
   return (
     <section id="agent-process" className="bg-dark-purple py-20">
@@ -46,7 +58,7 @@ const AgentProcess: React.FC<AgentProcessProps> = ({ steps }) => {
           <div className="absolute top-1/2 left-0 w-full h-0.5 bg-caribbean-current/20 -translate-y-1/2 
                        hidden lg:block" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className={`grid grid-cols-1 md:grid-cols-2 ${steps.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-8`}>
             {steps.map((step, index) => (
               <motion.div
                 key={index}
@@ -62,8 +74,8 @@ const AgentProcess: React.FC<AgentProcessProps> = ({ steps }) => {
                 <div className="flex flex-col items-center text-center">
                   <div className="w-16 h-16 bg-caribbean-current/20 rounded-xl flex items-center 
                                justify-center mb-4">
-                  {getIconComponent(step.icon)}
-                </div>
+                    {step.icon && (iconMap[step.icon] || <span className="text-2xl">{step.icon}</span>)}
+                  </div>
                   <h3 className="text-xl font-heading font-bold text-seasalt mb-2">
                     {step.title}
                   </h3>

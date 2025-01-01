@@ -115,9 +115,7 @@ const Agents: React.FC = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="pl-10 pr-8 py-3 bg-seasalt/5 border border-seasalt/10 rounded-lg
-                         text-seasalt appearance-none cursor-pointer focus:outline-none focus:border-seasalt/20"
-              >
+                className="pl-10 pr-8 py-3 bg-seasalt/5 border border-seasalt/10 rounded-lg text-seasalt appearance-none cursor-pointer focus:outline-none focus:border-seasalt/20">
                 {categories.map(category => (
                   <option key={category} value={category}>
                     {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -144,7 +142,7 @@ const Agents: React.FC = () => {
                            border border-seasalt/10 hover:border-seasalt/20 transition-all
                            hover:bg-seasalt/10"
                   whileHover={{ scale: 1.02 }}
-                  onClick={() => navigate(`/agents/${agent.id}`)} 
+                onClick={() => navigate(`/agents/${agent.id}`)}
                 >
                   <div className="mb-6">
                     <div className="w-14 h-14 bg-caribbean-current/20 rounded-xl flex items-center 

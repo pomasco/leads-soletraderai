@@ -7,20 +7,20 @@ interface AgentHeroProps {
   agentName: string;
   agentTitle: string;
   description: string;
-  avatar?: string;
-  icon?: React.ReactNode;
-  categories?: string[];
-  tags?: string[];
+  avatar: string | null;
+  categories: string[];
+  tags: string[];
+  developer: string;
 }
 
 const AgentHero: React.FC<AgentHeroProps> = ({ 
   agentName,
   agentTitle,
   description, 
-  avatar = '/images/Avatar/Avatar.png',
-  icon,
-  categories = ['Category 1', 'Category 2', 'Category 3'],
-  tags = ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4', 'Tag 5']
+  avatar,
+  categories,
+  tags,
+  developer
 }) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -28,10 +28,17 @@ const AgentHero: React.FC<AgentHeroProps> = ({
   });
 
   const categoryStyles = {
-    'Category 1': 'bg-red-100 text-red-600 hover:bg-red-200',
-    'Category 2': 'bg-green-100 text-green-600 hover:bg-green-200',
-    'Category 3': 'bg-purple-100 text-purple-600 hover:bg-purple-200'
+    'lead_generation': 'bg-red-100 text-red-600 hover:bg-red-200',
+    'data_extraction': 'bg-green-100 text-green-600 hover:bg-green-200',
+    'template': 'bg-purple-100 text-purple-600 hover:bg-purple-200',
+    'default': 'bg-blue-100 text-blue-600 hover:bg-blue-200'
   };
+
+  const getCategoryStyle = (category: string) => {
+    return categoryStyles[category as keyof typeof categoryStyles] || categoryStyles.default;
+  };
+
+  const defaultAvatar = '/images/Avatar/Avatar.png';
 
   return (
     <section id="agent-hero" className="relative min-h-[80vh] bg-white">
@@ -98,16 +105,16 @@ const AgentHero: React.FC<AgentHeroProps> = ({
             <div className="mt-12 pt-12 border-t border-dark-purple/10">
               <div className="flex items-center gap-8">
                 <div className="flex flex-wrap gap-3">
-                  {categories.map((category, index) => (
+                  {(categories || []).map((category, index) => (
                     <motion.a
                       key={index}
                       href={`#${category.toLowerCase().replace(/\s+/g, '-')}`}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                               ${categoryStyles[category as keyof typeof categoryStyles]}`}
+                               ${getCategoryStyle(category)}`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      {category}
+                      {category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                     </motion.a>
                   ))}
                 </div>
@@ -115,7 +122,7 @@ const AgentHero: React.FC<AgentHeroProps> = ({
                 <div className="h-8 w-px bg-dark-purple/10" />
                 
                 <div className="flex flex-wrap gap-2">
-                  {tags.map((tag, index) => (
+                  {(tags || []).map((tag, index) => (
                     <motion.a
                       key={index}
                       href={`#${tag.toLowerCase().replace(/\s+/g, '-')}`}
@@ -124,7 +131,7 @@ const AgentHero: React.FC<AgentHeroProps> = ({
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      {tag}
+                      {tag.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                     </motion.a>
                   ))}
                 </div>
@@ -136,14 +143,23 @@ const AgentHero: React.FC<AgentHeroProps> = ({
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="col-span-3 aspect-square rounded-full overflow-hidden border-4 
-                     border-caribbean-current shadow-xl"
+            className="col-span-3 flex flex-col items-center"
           >
-            <img
-              src={avatar}
-              alt="Agent Avatar"
-              className="w-full h-full object-cover"
-            />
+            <div className="w-full aspect-square rounded-full overflow-hidden border-4 
+                         border-caribbean-current shadow-xl bg-white relative">
+              <img
+                src={avatar || defaultAvatar}
+                alt={`${agentName} Avatar`}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.src = defaultAvatar;
+                }}
+              />
+            </div>
+            <p className="text-center mt-4 text-dark-purple font-medium">
+              Developed by {developer}
+            </p>
           </motion.div>
         </div>
       </div>
