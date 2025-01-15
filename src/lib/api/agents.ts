@@ -6,6 +6,7 @@
 -      services
 +      services,
       process,
+      process,
       metadata
      `)
      .eq('slug', slug)

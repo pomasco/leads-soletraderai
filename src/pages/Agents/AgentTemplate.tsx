@@ -4,6 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAgent } from '../../hooks/useAgent';
 import Navigation from '../../components/Navigation';
+import AgentProcess from '../../components/Agent/AgentProcess';
 import Footer from '../../components/Footer';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
@@ -31,12 +32,23 @@ const AgentTemplate: React.FC = () => {
     return null;
   }
   
-  console.log('Agent process data:', agent.process);
+  console.log('Agent data:', {
+    process: agent.process,
+    isArray: Array.isArray(agent.process),
+    type: typeof agent.process,
+    processLength: agent.process?.length
+  });
+  
+  console.log('Agent data:', {
+    process: agent.process,
+    isArray: Array.isArray(agent.process),
+    type: typeof agent.process
+  });
 
-      {agent.process && agent.process.length > 0 && (
-        <AgentProcess steps={agent.process} />
-      )}
-      
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-dark-purple to-dark-cyan">
+      <Navigation />
+  
       {/* Hero Section */}
       <section className="relative min-h-[80vh] flex items-center">
         <div className="container mx-auto px-4 relative z-10">
@@ -45,19 +57,19 @@ const AgentTemplate: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl"
+            className="max-w-4xl mx-auto text-center"
           >
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl mb-6 text-seasalt">
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl mb-6 text-seasalt text-center">
               {agent.name}
             </h1>
-            <h2 className="font-heading text-2xl sm:text-3xl lg:text-3xl mb-6 text-seasalt">
+            <h2 className="font-heading text-2xl sm:text-3xl lg:text-3xl mb-6 text-seasalt text-center">
               {agent.title}
             </h2>
-            <p className="text-xl text-seasalt/80 mb-12 max-w-2xl">
+            <p className="text-xl text-seasalt/80 mb-12 max-w-2xl mx-auto text-center">
               {agent.long_description || agent.short_description}
             </p>
             
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap gap-6 justify-center">
               <motion.button
                 className="btn-primary"
                 whileHover={{ scale: 1.05 }}
@@ -110,6 +122,11 @@ const AgentTemplate: React.FC = () => {
         </div>
       </section>
 
+      {/* Process Section */}
+      {agent.process && Array.isArray(agent.process) && agent.process.length > 0 && (
+        <AgentProcess steps={agent.process} />
+      )}
+
       {/* Features Section */}
       <section className="bg-seasalt py-20">
         <div className="container mx-auto px-4">
@@ -119,10 +136,10 @@ const AgentTemplate: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="font-heading font-bold text-4xl text-dark-purple mb-6">
+            <h2 className="font-heading font-bold text-4xl text-dark-purple mb-6 text-center">
               Key Features
             </h2>
-            <p className="text-xl text-dark-purple/80">
+            <p className="text-xl text-dark-purple/80 text-center">
               Discover what makes our solution unique
             </p>
           </motion.div>
@@ -137,7 +154,7 @@ const AgentTemplate: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <h3 className="text-xl font-heading font-bold text-dark-purple mb-4">
+                <h3 className="text-xl font-heading font-bold text-dark-purple mb-4 text-center">
                   {feature}
                 </h3>
               </motion.div>

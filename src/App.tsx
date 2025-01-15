@@ -7,6 +7,8 @@ import AgentPage from './pages/Dashboard/AgentPage';
 import Dashboard from './pages/Dashboard';
 import AgentsPage from './pages/Dashboard/Agents/index';
 import Pricing from './pages/Pricing';
+import Contact from './pages/Contact';
+import Contact from './pages/Contact';
 import Agents from './pages/Agents';
 
 const AppContent = () => {
@@ -24,6 +26,8 @@ const AppContent = () => {
         <Route path="/dashboard/agents/:agentSlug" element={<AgentPage />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/agents" element={<Agents />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </div>
   );

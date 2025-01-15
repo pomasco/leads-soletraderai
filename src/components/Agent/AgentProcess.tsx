@@ -26,14 +26,12 @@ const AgentProcess: React.FC<AgentProcessProps> = ({ steps }) => {
     threshold: 0.1
   });
 
-  if (!steps || !Array.isArray(steps) || steps.length === 0) {
-    console.log('No process steps available:', steps);
-    return null;
-  }
-
   if (!steps || steps.length === 0) {
     return null;
   }
+
+  // Parse steps from JSON if needed
+  const processSteps = Array.isArray(steps) ? steps : JSON.parse(steps as unknown as string);
 
   return (
     <section id="agent-process" className="bg-dark-purple py-20">
@@ -45,10 +43,10 @@ const AgentProcess: React.FC<AgentProcessProps> = ({ steps }) => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="font-heading font-bold text-4xl text-seasalt mb-4">
+          <h2 className="font-heading font-bold text-4xl text-seasalt mb-4 text-center mx-auto">
             How It Works
           </h2>
-          <p className="text-xl text-seasalt/80 max-w-2xl mx-auto">
+          <p className="text-xl text-seasalt/80 max-w-2xl mx-auto text-center">
             Follow these simple steps to get started
           </p>
         </motion.div>
@@ -76,10 +74,10 @@ const AgentProcess: React.FC<AgentProcessProps> = ({ steps }) => {
                                justify-center mb-4">
                     {step.icon && (iconMap[step.icon] || <span className="text-2xl">{step.icon}</span>)}
                   </div>
-                  <h3 className="text-xl font-heading font-bold text-seasalt mb-2">
+                  <h3 className="text-xl font-heading font-bold text-seasalt mb-2 text-center w-full">
                     {step.title}
                   </h3>
-                  <p className="text-seasalt/70">
+                  <p className="text-seasalt/70 text-center w-full">
                     {step.description}
                   </p>
                 </div>

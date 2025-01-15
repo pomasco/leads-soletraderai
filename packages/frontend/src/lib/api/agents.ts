@@ -19,13 +19,21 @@ export async function getAgentBySlug(slug: string): Promise<Agent | null> {
       tags,
       developer,
       avatar,
-      services
+      services,
+      process
     `)
     .eq('slug', slug)
     .maybeSingle();
 
+  console.log('Supabase Response:', data); // Log the fetched data for debugging
+
   if (error) {
+    console.error('Supabase Error:', error);
     throw new Error(`Failed to fetch agent: ${error.message}`);
+  }
+
+  if (!data || !data.process) {
+    throw new Error('Process data not found for this agent'); // Ensure process exists
   }
 
   return data;
