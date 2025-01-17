@@ -7,9 +7,9 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-dark-purple">
+    <div className="min-h-screen bg-gray-50">
       <SideMenu />
-      <div className="ml-64 min-h-screen">
+      <div id="dashboard-main-content" className="ml-64 min-h-screen bg-white">
         {children}
       </div>
     </div>

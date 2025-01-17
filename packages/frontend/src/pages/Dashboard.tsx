@@ -24,20 +24,20 @@ const Dashboard: React.FC = () => {
   return (
     <DashboardLayout>
       <div className="p-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-12">
           <div>
-            <h1 className="text-3xl font-heading font-bold text-seasalt mb-2">
+            <h1 className="text-3xl font-heading font-bold text-dark-purple mb-2">
               Welcome back, {user?.user_metadata?.full_name || 'User'} 👋✨
             </h1>
-            <p className="text-seasalt/60">
+            <p className="text-dark-purple/60">
               Manage your lead generation and track your progress
             </p>
           </div>
           
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-seasalt/80">
+            <div className="flex items-center gap-2 text-dark-purple/60">
               <span>Showing:</span>
-              <select className="bg-dark-cyan/20 border border-dark-cyan/30 rounded-lg px-3 py-1.5">
+              <select className="bg-white border border-dark-purple/20 rounded-lg px-3 py-1.5 text-dark-purple">
                 <option>Latest</option>
                 <option>Last 7 days</option>
                 <option>Last 30 days</option>
@@ -53,27 +53,23 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="mb-12">
-          <ScrapingForm />
-        </div>
-
         <DashboardStats stats={stats} />
 
         <div className="mt-12">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h2 className="text-2xl font-heading font-bold text-seasalt mb-2">
+              <h2 className="text-2xl font-heading font-bold text-dark-purple mb-2">
                 Recent Searches
               </h2>
-              <p className="text-seasalt/60">
+              <p className="text-dark-purple/60">
                 View and manage your recent lead generation searches
               </p>
             </div>
             
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-seasalt/80">
+              <div className="flex items-center gap-2 text-dark-purple/60">
                 <span>Filter:</span>
-                <select className="bg-dark-cyan/20 border border-dark-cyan/30 rounded-lg px-3 py-1.5">
+                <select className="bg-white border border-dark-purple/20 rounded-lg px-3 py-1.5 text-dark-purple">
                   <option>All</option>
                   <option>Completed</option>
                   <option>In Progress</option>

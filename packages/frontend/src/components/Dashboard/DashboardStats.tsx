@@ -52,12 +52,12 @@ const DashboardStats: React.FC<StatsProps> = ({ stats }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="bg-seasalt/5 backdrop-blur-lg rounded-xl p-6"
+          className="bg-white border border-dark-purple/10 rounded-xl p-6"
         >
           <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-seasalt/60 mb-1">{stat.title}</p>
-              <h3 className="text-4xl font-heading font-bold text-seasalt">
+              <p className="text-dark-purple/60 mb-1">{stat.title}</p>
+              <h3 className="text-4xl font-heading font-bold text-dark-purple">
                 {stat.value.toLocaleString()}
               </h3>
             </div>
@@ -71,7 +71,7 @@ const DashboardStats: React.FC<StatsProps> = ({ stats }) => {
             }`}>
               {stat.change}
             </span>
-            <span className="text-sm text-seasalt/40">{stat.period}</span>
+            <span className="text-sm text-dark-purple/40">{stat.period}</span>
           </div>
         </motion.div>
       ))}

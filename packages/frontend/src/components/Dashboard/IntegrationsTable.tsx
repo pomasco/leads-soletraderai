@@ -31,17 +31,17 @@ const IntegrationsTable: React.FC = () => {
   ];
 
   return (
-    <div className="bg-seasalt/5 backdrop-blur-lg rounded-xl overflow-hidden">
+    <div className="bg-white border border-dark-purple/10 rounded-xl overflow-hidden">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-seasalt/10">
-            <th className="text-left py-4 px-6 text-seasalt/60 font-medium">Search</th>
-            <th className="text-left py-4 px-6 text-seasalt/60 font-medium">Keywords</th>
-            <th className="text-left py-4 px-6 text-seasalt/60 font-medium">Location</th>
-            <th className="text-left py-4 px-6 text-seasalt/60 font-medium">Status</th>
-            <th className="text-left py-4 px-6 text-seasalt/60 font-medium">Last Updated</th>
-            <th className="text-left py-4 px-6 text-seasalt/60 font-medium">Action</th>
-            <th className="text-left py-4 px-6 text-seasalt/60 font-medium"></th>
+          <tr className="border-b border-dark-purple/10">
+            <th className="text-left py-4 px-6 text-dark-purple/60 font-medium">Search</th>
+            <th className="text-left py-4 px-6 text-dark-purple/60 font-medium">Keywords</th>
+            <th className="text-left py-4 px-6 text-dark-purple/60 font-medium">Location</th>
+            <th className="text-left py-4 px-6 text-dark-purple/60 font-medium">Status</th>
+            <th className="text-left py-4 px-6 text-dark-purple/60 font-medium">Last Updated</th>
+            <th className="text-left py-4 px-6 text-dark-purple/60 font-medium">Action</th>
+            <th className="text-left py-4 px-6 text-dark-purple/60 font-medium"></th>
           </tr>
         </thead>
         <tbody>
@@ -50,10 +50,10 @@ const IntegrationsTable: React.FC = () => {
               key={search.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="border-b border-seasalt/10 hover:bg-seasalt/5"
+              className="border-b border-dark-purple/10 hover:bg-dark-purple/5"
             >
               <td className="py-4 px-6">
-                <span className="text-seasalt font-medium">{search.name}</span>
+                <span className="text-dark-purple font-medium">{search.name}</span>
               </td>
               <td className="py-4 px-6">
                 <div className="flex flex-wrap gap-2">
@@ -68,7 +68,7 @@ const IntegrationsTable: React.FC = () => {
                 </div>
               </td>
               <td className="py-4 px-6">
-                <span className="text-seasalt">{search.location}</span>
+                <span className="text-dark-purple">{search.location}</span>
               </td>
               <td className="py-4 px-6">
                 {search.status === 'healthy' ? (
@@ -84,7 +84,7 @@ const IntegrationsTable: React.FC = () => {
                 )}
               </td>
               <td className="py-4 px-6">
-                <span className="text-seasalt/60">{search.lastSync}</span>
+                <span className="text-dark-purple/60">{search.lastSync}</span>
               </td>
               <td className="py-4 px-6">
                 <motion.button
@@ -96,7 +96,7 @@ const IntegrationsTable: React.FC = () => {
                 </motion.button>
               </td>
               <td className="py-4 px-6">
-                <button className="text-seasalt/60 hover:text-seasalt">
+                <button className="text-dark-purple/60 hover:text-dark-purple">
                   <MoreVertical className="w-5 h-5" />
                 </button>
               </td>

@@ -38,9 +38,9 @@ const SideMenu: React.FC = () => {
     
     return (
       <motion.div
+        className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer w-full text-left
+                 ${isActive ? 'bg-seasalt/10 text-seasalt' : 'text-seasalt/80 hover:text-seasalt'}`}
         whileHover={{ x: 5 }}
-        className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer
-                   ${isActive ? 'bg-caribbean-current/10 text-caribbean-current' : 'text-dark-purple hover:text-caribbean-current'}`}
       >
         <Icon className="w-5 h-5" />
         <span className="font-medium">{label}</span>
@@ -49,16 +49,16 @@ const SideMenu: React.FC = () => {
   };
 
   return (
-    <div className="w-64 bg-white h-screen fixed left-0 top-0 shadow-lg flex flex-col z-50">
+    <div id="dashboard-sidemenu" className="w-64 bg-dark-purple h-screen fixed left-0 top-0 shadow-lg flex flex-col z-50">
       <div className="p-6">
         <img
-          src="/images/Logo/soletraderai-logo-black.png"
+          src="/images/Logo/soletraderai-logo-white.png"
           alt="Sole Trader AI"
           className="h-8 mb-8"
         />
         
         <div className="mb-4">
-          <p className="text-sm font-medium text-dark-purple/60 px-4 mb-2">
+          <p className="text-sm font-medium text-seasalt/60 px-4 mb-2">
             Main Menu
           </p>
           {menuItems.map((item, index) => (
@@ -70,18 +70,26 @@ const SideMenu: React.FC = () => {
       </div>
 
       <div className="mt-auto p-6">
-        <div className="border-t border-dark-purple/10 pt-6">
+        <div className="border-t border-seasalt/10 pt-6">
           {bottomMenuItems.map((item, index) => (
-            <Link to={item.path} key={index}>
-              <MenuItem {...item} />
-            </Link>
+            <React.Fragment key={index}>
+              {item.path !== '#' ? (
+                <Link to={item.path}>
+                  <MenuItem {...item} />
+                </Link>
+              ) : (
+                <button className="w-full" onClick={() => console.log('Toggle theme')}>
+                  <MenuItem {...item} />
+                </button>
+              )}
+            </React.Fragment>
           ))}
           
           <motion.button
             onClick={handleLogout}
             whileHover={{ x: 5 }}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg w-full text-left
-                     text-dark-purple hover:text-caribbean-current"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg w-full text-left 
+                     text-seasalt/80 hover:text-seasalt"
           >
             <LogOut className="w-5 h-5" />
             <span className="font-medium">Log Out</span>

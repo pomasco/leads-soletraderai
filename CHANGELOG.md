@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Contact page features
+  - Public contact form with reCAPTCHA integration
+  - Dashboard contact form for authenticated users
+  - Contact information display
+  - Email integration
+- Dashboard improvements
+  - Enhanced navigation with side menu
+  - Stats visualization
+  - Recent searches table
+  - Agent management interface
+
+### Changed
+- Agent template structure
+  - Updated hero section with "Add to team" functionality
+  - Improved process visualization
+  - Enhanced service cards layout
+- Navigation system
+  - Separate navigation for public and dashboard areas
+  - Improved responsive design
+
+### Fixed
+- Supabase connection handling
+  - Added environment variable validation
+  - Improved error messaging for missing configuration
+- Agent data fetching
+  - Fixed categories filtering
+  - Improved type safety for agent data
+
+### Security
+- Added reCAPTCHA verification for public contact form
+- Enhanced authentication flow for agent employment
+- Improved session management
+
+### Added
 - Role-based access control system
   - Core role types and business role definitions
   - Role capability management

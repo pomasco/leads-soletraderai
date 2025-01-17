@@ -9,7 +9,7 @@ interface Agent {
   id: string;
   name: string;
   description: string;
-  category: string;
+  categories: string[];
   icon: string;
   is_active: boolean;
   last_used: string;
@@ -29,29 +29,22 @@ const AgentsPage: React.FC = () => {
   const fetchAgents = async () => {
     try {
       const { data: userAgents, error } = await supabase
-        .from('user_agents')
+        .from('agents')
         .select(`
-          agent_id,
+          id,
+          name,
+          description,
+          categories,
+          icon,
           is_active,
-          last_used,
-          agents (
-            id,
-            name,
-            description,
-            category,
-            icon
-          )
+          last_used
         `)
         .order('last_used', { ascending: false });
 
       if (error) throw error;
 
       if (userAgents) {
-        setAgents(userAgents.map(ua => ({
-          ...ua.agents,
-          is_active: ua.is_active,
-          last_used: ua.last_used
-        })));
+        setAgents(userAgents);
       }
     } catch (error) {
       console.error('Error fetching agents:', error);
@@ -63,11 +56,12 @@ const AgentsPage: React.FC = () => {
   const filteredAgents = agents.filter(agent => {
     const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          agent.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || agent.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || 
+                          (agent.categories && agent.categories.includes(selectedCategory));
     return matchesSearch && matchesCategory;
   });
 
-  const categories = ['all', ...new Set(agents.map(agent => agent.category))];
+  const categories = ['all', ...new Set(agents.flatMap(agent => agent.categories || []))];
 
   return (
     <DashboardLayout>

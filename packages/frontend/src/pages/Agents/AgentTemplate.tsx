@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAgent } from '../../hooks/useAgent';
+import { supabase } from '../../lib/supabase';
 import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -18,6 +19,56 @@ const AgentTemplate: React.FC = () => {
   const { agentSlug } = useParams<{ agentSlug: string }>();
   const navigate = useNavigate();
   const { agent, loading, error } = useAgent(agentSlug || '');
+  const [isEmploying, setIsEmploying] = React.useState(false);
+  const [user, setUser] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+  }, []);
+
+  const handleEmployAgent = async () => {
+    if (!user) {
+      // Redirect to auth modal or login page
+      navigate('/login');
+      return;
+    }
+
+    setIsEmploying(true);
+    try {
+      // Check if agent is already employed
+      const { data: existingAgent, error: checkError } = await supabase
+        .from('user_agents')
+        .select()
+        .match({ user_id: user.id, agent_id: agent?.id });
+
+      if (checkError) throw checkError;
+
+      if (!existingAgent || existingAgent.length === 0) {
+        // Add agent to user's dashboard
+        const { error: insertError } = await supabase
+          .from('user_agents')
+          .insert([{
+            user_id: user.id,
+            agent_id: agent?.id,
+            settings: {},
+            is_active: true,
+            last_used: new Date().toISOString()
+          }]);
+        
+        if (insertError) throw insertError;
+      }
+      
+      // Navigate to the agent's dashboard page
+      navigate(`/dashboard/agents/${agent?.slug}`);
+    } catch (error) {
+      console.error('Error employing agent:', error);
+      alert('Failed to add agent to your team. Please try again.');
+    } finally {
+      setIsEmploying(false);
+    }
+  };
   
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -48,6 +99,7 @@ const AgentTemplate: React.FC = () => {
       <AgentHero
         agentName={agent.name}
         agentTitle={agent.title}
+        agentId={agent.id}
         description={agent.long_description || agent.short_description}
         avatar={agent.avatar}
         categories={agent.categories || []}
