@@ -7,6 +7,7 @@ import { supabase } from '../../../lib/supabase';
 
 interface Agent {
   id: string;
+  slug: string;
   name: string;
   description: string;
   categories: string[];
@@ -28,23 +29,34 @@ const AgentsPage: React.FC = () => {
 
   const fetchAgents = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
       const { data: userAgents, error } = await supabase
-        .from('agents')
+        .from('user_agents')
         .select(`
-          id,
-          name,
-          description,
-          categories,
-          icon,
+          last_used,
           is_active,
-          last_used
+          agents (
+            id,
+            slug,
+            name,
+            description,
+            categories,
+            icon
+          )
         `)
+        .eq('user_id', user.id)
         .order('last_used', { ascending: false });
 
       if (error) throw error;
 
-      if (userAgents) {
-        setAgents(userAgents);
+      if (userAgents && Array.isArray(userAgents)) {
+        setAgents(userAgents.map(ua => ({
+          ...ua.agents,
+          is_active: ua.is_active,
+          last_used: ua.last_used
+        })));
       }
     } catch (error) {
       console.error('Error fetching agents:', error);
@@ -68,10 +80,10 @@ const AgentsPage: React.FC = () => {
     <div className="p-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-seasalt mb-2">
+          <h1 className="text-3xl font-heading font-bold text-dark-purple mb-2">
             Your Agents
           </h1>
-          <p className="text-seasalt/60">
+          <p className="text-dark-purple">
             Manage and interact with your AI agents
           </p>
         </div>
@@ -89,24 +101,24 @@ const AgentsPage: React.FC = () => {
 
       <div className="flex gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-seasalt/40" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-purple" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search agents..."
-            className="w-full pl-10 pr-4 py-2 bg-seasalt/5 border border-seasalt/10 rounded-lg
-                     text-seasalt placeholder:text-seasalt/40 focus:outline-none focus:border-seasalt/20"
+            className="w-full pl-10 pr-4 py-2 bg-white border border-dark-purple/10 rounded-lg
+                     text-dark-purple placeholder:text-dark-purple focus:outline-none focus:border-dark-purple/20"
           />
         </div>
 
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-seasalt/40" />
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-purple/40" />
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="pl-10 pr-8 py-2 bg-seasalt/5 border border-seasalt/10 rounded-lg
-                     text-seasalt appearance-none cursor-pointer focus:outline-none focus:border-seasalt/20"
+            className="pl-10 pr-8 py-2 bg-white border border-dark-purple/10 rounded-lg
+                     text-dark-purple appearance-none cursor-pointer focus:outline-none focus:border-dark-purple/20"
           >
             {categories.map(category => (
               <option key={category} value={category}>
@@ -119,11 +131,11 @@ const AgentsPage: React.FC = () => {
 
       {loading ? (
         <div className="text-center py-12">
-          <p className="text-seasalt/60">Loading agents...</p>
+          <p className="text-dark-purple/60">Loading agents...</p>
         </div>
       ) : filteredAgents.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-seasalt/60 mb-4">No agents found</p>
+          <p className="text-dark-purple mb-4">No agents found</p>
           <motion.button
             className="btn-primary"
             whileHover={{ scale: 1.05 }}
@@ -139,16 +151,16 @@ const AgentsPage: React.FC = () => {
           {filteredAgents.map((agent) => (
             <motion.div
               key={agent.id}
-              className="bg-seasalt/5 backdrop-blur-lg rounded-xl p-6 cursor-pointer"
+              className="bg-white border border-dark-purple/10 rounded-xl p-6 cursor-pointer"
               whileHover={{ scale: 1.02 }}
-              onClick={() => navigate('/agents')}
+              onClick={() => navigate(`/dashboard/agents/${agent.slug}`)}
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-heading font-bold text-seasalt mb-2">
+                  <h3 className="text-xl font-heading font-bold text-dark-purple mb-2">
                     {agent.name}
                   </h3>
-                  <p className="text-seasalt/60 text-sm">
+                  <p className="text-dark-purple text-sm">
                     {agent.description}
                   </p>
                 </div>
@@ -163,7 +175,7 @@ const AgentsPage: React.FC = () => {
                 </div>
               </div>
               {agent.last_used && (
-                <p className="text-seasalt/40 text-sm">
+                <p className="text-dark-purple text-sm">
                   Last used: {new Date(agent.last_used).toLocaleDateString()}
                 </p>
               )}

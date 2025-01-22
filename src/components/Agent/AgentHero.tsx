@@ -1,106 +1,186 @@
-@@ .. @@
- import React from 'react';
- import { motion } from 'framer-motion';
- import { useInView } from 'react-intersection-observer';
--import { ArrowRight, Bot, PlayCircle } from 'lucide-react';
-+import { Bot, PlayCircle, Loader2 } from 'lucide-react';
-+import { useNavigate } from 'react-router-dom';
-+import { supabase } from '../../lib/supabase';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+import { Bot, PlayCircle, Loader2, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
+import AuthModal from '../AuthModal';
 
- interface AgentHeroProps {
-   agentName: string;
-@@ .. @@
-   categories: string[];
-   tags: string[];
-   developer: string;
-+  agentId: string;
- }
+interface AgentHeroProps {
+  agentName: string;
+  agentTitle: string;
+  description: string;
+  avatar: string;
+  categories: string[];
+  tags: string[];
+  developer: string;
+  agentId: string;
+}
 
- const AgentHero: React.FC<AgentHeroProps> = ({ 
-   agentName,
-   agentTitle,
-   description, 
-   avatar,
-   categories,
-   tags,
-   developer,
-+  agentId
- }) => {
-+  const navigate = useNavigate();
-+  const [isEmploying, setIsEmploying] = React.useState(false);
-+  const [user, setUser] = React.useState<any>(null);
-   const [ref, inView] = useInView({
-     triggerOnce: true,
-     threshold: 0.1
-   });
+const AgentHero: React.FC<AgentHeroProps> = ({ 
+  agentName,
+  agentTitle,
+  description, 
+  avatar,
+  categories,
+  tags,
+  developer,
+  agentId
+}) => {
+  const navigate = useNavigate();
+  const [isEmploying, setIsEmploying] = React.useState(false);
+  const [user, setUser] = React.useState<any>(null);
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1
+  });
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
 
-+  React.useEffect(() => {
-+    supabase.auth.getSession().then(({ data: { session } }) => {
-+      setUser(session?.user ?? null);
-+    });
-+  }, []);
-+
-+  const handleEmployAgent = async () => {
-+    if (!user) {
-+      setShowAuthModal(true);
-+      return;
-+    }
-+
-+    setIsEmploying(true);
-+    try {
-+      // Check if agent is already employed
-+      const { data: existingAgent, error: checkError } = await supabase
-+        .from('user_agents')
-+        .select()
-+        .match({ user_id: user.id, agent_id: agentId });
-+
-+      if (checkError) throw checkError;
-+
-+      if (!existingAgent || existingAgent.length === 0) {
-+        // Add agent to user's dashboard
-+        const { error: insertError } = await supabase
-+          .from('user_agents')
-+          .insert([{
-+            user_id: user.id,
-+            agent_id: agentId,
-+            settings: {},
-+            is_active: true,
-+            last_used: new Date().toISOString()
-+          }]);
-+        
-+        if (insertError) throw insertError;
-+      }
-+      
-+      // Navigate to the agent's dashboard page
-+      navigate(`/dashboard/agents/${agentId}`);
-+    } catch (error) {
-+      console.error('Error employing agent:', error);
-+      alert('Failed to add agent to your team. Please try again.');
-+    } finally {
-+      setIsEmploying(false);
-+    }
-+  };
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+  }, []);
 
-   const categoryStyles = {
-@@ .. @@
-             <div className="flex flex-wrap gap-6">
-               <motion.button
--                className="bg-caribbean-current/10 text-caribbean-current px-6 py-3 rounded-lg 
--                         flex items-center gap-2 hover:bg-caribbean-current/20 transition-colors"
-+                className="btn-primary flex items-center gap-2"
-                 whileHover={{ scale: 1.05 }}
-                 whileTap={{ scale: 0.95 }}
-+                onClick={handleEmployAgent}
-+                disabled={isEmploying}
-               >
--                Get Started
--                <ArrowRight className="w-5 h-5" />
-+                {isEmploying ? (
-+                  <>
-+                    <Loader2 className="w-5 h-5 animate-spin" />
-+                    Adding {agentName}...
-+                  </>
-+                ) : (
-+                  <>Add {agentName} to your team</>
-+                )}
-               </motion.button>
+  const handleEmployAgent = async () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    setIsEmploying(true);
+    try {
+      // Check if agent is already employed
+      const { data: existingAgent, error: checkError } = await supabase
+        .from('user_agents')
+        .select()
+        .match({ user_id: user.id, agent_id: agentId });
+
+      if (checkError) throw checkError;
+
+      if (!existingAgent || existingAgent.length === 0) {
+        // Add agent to user's dashboard
+        const { error: insertError } = await supabase
+          .from('user_agents')
+          .insert([{
+            user_id: user.id,
+            agent_id: agentId,
+            settings: {},
+            is_active: true,
+            last_used: new Date().toISOString()
+          }]);
+        
+        if (insertError) throw insertError;
+      }
+      
+      // Navigate to the agent's dashboard page
+      navigate(`/dashboard/agents/${agentId}`);
+    } catch (error) {
+      console.error('Error employing agent:', error);
+      alert('Failed to add agent to your team. Please try again.');
+    } finally {
+      setIsEmploying(false);
+    }
+  };
+
+  const categoryStyles = {
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    color: 'rgba(0, 0, 0, 0.7)',
+    padding: '0.25rem 0.75rem',
+    borderRadius: '0.5rem',
+    fontSize: '0.875rem',
+  };
+
+  return (
+    <section id="agent-hero" className="relative min-h-[80vh] bg-white">
+      <div className="container mx-auto px-4 py-16 lg:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 50 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5 }}
+            className="space-y-6"
+          >
+            <div className="flex items-center gap-4">
+              <img src={avatar} alt={agentName} className="w-16 h-16 rounded-full" />
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">{agentName}</h1>
+                <p className="text-gray-600">{agentTitle}</p>
+              </div>
+            </div>
+
+            <p className="text-gray-700 leading-relaxed">{description}</p>
+
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="text-gray-600 mr-2">Categories:</span>
+              {categories.map((category, index) => (
+                <span key={index} style={categoryStyles}>
+                  {category}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="text-gray-600 mr-2">Tags:</span>
+              {tags.map((tag, index) => (
+                <span key={index} style={categoryStyles}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-4 text-gray-700">
+              <span>Developer: {developer}</span>
+            </div>
+
+            <div className="flex flex-wrap gap-6">
+              <motion.button
+                className="btn-primary flex items-center gap-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleEmployAgent}
+                disabled={isEmploying}
+              >
+                {isEmploying ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Adding {agentName}...
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-5 h-5" />
+                    Add {agentName} to your team
+                  </>
+                )}
+              </motion.button>
+
+              <motion.button
+                className="bg-gray-100 text-gray-800 px-6 py-3 rounded-lg 
+                         flex items-center gap-2 hover:bg-gray-200 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <PlayCircle className="w-5 h-5" />
+                Preview
+              </motion.button>
+            </div>
+          </motion.div>
+
+          <div className="hidden lg:block">
+            <img src={avatar} alt={agentName} className="w-full h-auto rounded-lg shadow-lg" />
+          </div>
+        </div>
+      </div>
+      {showAuthModal && (
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          initialMode="signin"
+        />
+      )}
+    </section>
+  );
+};
+
+export default AgentHero;
