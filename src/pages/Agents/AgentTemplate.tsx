@@ -2,23 +2,96 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Plus, Loader2 } from 'lucide-react';
 import { useAgent } from '../../hooks/useAgent';
+import { supabase } from '../../lib/supabase';
 import Navigation from '../../components/Navigation';
 import AgentProcess from '../../components/Agent/AgentProcess';
 import Footer from '../../components/Footer';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import AgentHero from '../../components/Agent/AgentHero';
+import AuthModal from '../../components/AuthModal';
 
 const AgentTemplate: React.FC = () => {
   const { agentSlug } = useParams<{ agentSlug: string }>();
   const navigate = useNavigate();
   const { agent, isLoading, isError } = useAgent(agentSlug || '');
+  const [isEmploying, setIsEmploying] = React.useState(false);
+  const [hasAgent, setHasAgent] = React.useState(false);
+  const [user, setUser] = React.useState<any>(null);
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
+  const [successMessage, setSuccessMessage] = React.useState('');
   
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
   });
 
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user && agent) {
+        checkAgentStatus(session.user.id);
+      }
+    });
+  }, [agent]);
+
+  const checkAgentStatus = async (userId: string) => {
+    if (!agent) return;
+    
+    try {
+      const { data: existingAgent } = await supabase
+        .from('user_agents')
+        .select()
+        .match({ user_id: userId, agent_id: agent.id })
+        .single();
+      
+      setHasAgent(!!existingAgent);
+    } catch (error) {
+      console.error('Error checking agent status:', error);
+    }
+  };
+
+  const handleEmployAgent = async () => {
+    if (hasAgent) {
+      navigate(`/dashboard/agents/${agentSlug}`);
+      return;
+    }
+
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    setIsEmploying(true);
+    try {
+      const { error: insertError } = await supabase
+        .from('user_agents')
+        .insert([{
+          user_id: user.id,
+          agent_id: agent?.id,
+          settings: {},
+          is_active: true,
+          last_used: new Date().toISOString()
+        }]);
+      
+      if (insertError) throw insertError;
+      
+      setHasAgent(true);
+      setSuccessMessage(`${agent?.name} has been added to your team!`);
+      
+      // Show success message for 3 seconds before navigating
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Navigate to the agent's dashboard page
+      navigate(`/dashboard/agents/${agentSlug}`);
+    } catch (error) {
+      console.error('Error employing agent:', error);
+      alert('Failed to add agent to your team. Please try again.');
+    } finally {
+      setIsEmploying(false);
+    }
+  };
   React.useEffect(() => {
     if (!isLoading && (isError || !agent)) {
       navigate('/agents', { replace: true });
@@ -53,10 +126,14 @@ const AgentTemplate: React.FC = () => {
       <AgentHero
         agentName={agent.name}
         agentTitle={agent.title}
-        agentId={agent.id}
         description={agent.long_description || agent.short_description}
         avatar={agent.avatar}
         categories={agent.categories || []}
+        tags={agent.tags || []}
+        developer={agent.developer}
+        isEmploying={isEmploying}
+        hasAgent={hasAgent}
+        onEmploy={handleEmployAgent}
       />
 
       {/* Process Section */}
@@ -99,6 +176,28 @@ const AgentTemplate: React.FC = () => {
           </div>
         </div>
       </section>
+      
+      {/* Success Message */}
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed bottom-4 right-4 bg-celadon text-dark-purple px-6 py-3 rounded-lg shadow-lg"
+          >
+            {successMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {showAuthModal && (
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          initialMode="signin"
+        />
+      )}
 
       <Footer />
     </div>

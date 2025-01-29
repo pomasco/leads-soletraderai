@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Agent Form Builder System
+  - Drag-and-drop form builder interface
+  - Dynamic field configuration
+  - Form validation rules
+  - Custom field types support
+- Agent Form Management
+  - Database schema for storing form configurations
+  - Form retrieval and rendering system
+  - Form submission handling
+- Agent Template Improvements
+  - Enhanced agent assignment workflow
+  - Success notifications
+  - Improved navigation flow
+- Dashboard Enhancements
+  - Collapsible side menu
+  - Improved agent management interface
+  - Better form integration
+
+### Changed
+- Agent Template Structure
+  - Moved agent assignment logic to parent component
+  - Improved state management
+  - Enhanced user feedback
+- Dashboard Layout
+  - Added collapsible sidebar functionality
+  - Improved responsive design
+  - Better component organization
+
+### Fixed
+- Agent assignment workflow
+  - Proper handling of existing agent assignments
+  - Improved error handling
+  - Better success messaging
+- Navigation issues
+  - Smoother transitions between pages
+  - Proper state preservation
+
+### Security
+- Enhanced form validation
+- Improved authentication flow
+- Better error handling for sensitive operations
+
+### Added
 - Contact page features
   - Public contact form with reCAPTCHA integration
   - Dashboard contact form for authenticated users
